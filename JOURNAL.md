@@ -42,3 +42,44 @@ The main flow works:
 ### Future Ideas
 
 Dynamic learning paths, more subjects, AI-generated content, and persistent progress.
+
+## September 5, 2026
+
+### Finalising and shipping
+
+Today I finished the LearnPath MVP and prepared it for public deployment.
+
+I cleaned the Git repository after discovering that generated `node_modules` files had accidentally been included in the repository. One of the files was larger than GitHub's file-size limit, so I removed the generated files from the Git history and created a clean repository history.
+
+I then pushed the clean project to GitHub and deployed it with Vercel.
+
+### What I chose
+
+I kept the product focused on one core problem: helping a beginner understand where to start when learning something new.
+
+The MVP uses static local content instead of a database or AI generation. This keeps the product simple while still allowing the complete experience to work from beginning to end.
+
+### What I parked
+
+I deliberately left these ideas out of the MVP:
+
+* AI-generated learning paths
+* User accounts
+* Persistent progress
+* Quizzes
+* Recommendations
+* Analytics
+* Streaks
+* Notifications
+
+These could become future iterations, but they are not necessary for testing the core idea.
+
+### Current state
+
+LearnPath is now deployed and working.
+
+The complete flow is:
+
+Home → Learning Path → Topic → Mark Complete → Learning Path
+
+The project now has a public repository, a case-study README, a project journal, and a live deployment.
