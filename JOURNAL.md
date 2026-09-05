@@ -1,7 +1,5 @@
 # LearnPath Project Journal
 
-## September 4, 2026
-
 ### The Idea
 
 I wanted to build a small project that helps people know where to start when learning something new.
