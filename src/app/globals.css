@@ -2,6 +2,95 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply bg-slate-50 text-slate-900 antialiased min-h-screen font-sans;
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply min-h-screen bg-paper font-sans text-ink;
+  }
+  ::selection {
+    background: #fbe1d9;
+  }
+}
+
+@layer components {
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2.5 whitespace-nowrap rounded-full border border-ink bg-ink px-5 py-3 text-[15px] font-semibold text-paper transition-transform duration-150 hover:-translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember;
+  }
+  .btn-sm {
+    @apply px-4 py-2.5 text-sm;
+  }
+  .btn-cream {
+    @apply border-paper bg-paper text-ink;
+  }
+  .btn-line {
+    @apply border-[#cbbfa9] bg-transparent text-ink;
+  }
+  .btn-line-light {
+    @apply border-white/40 bg-transparent text-inherit;
+  }
+  .btn-off {
+    @apply pointer-events-none border-sand bg-sand text-ink-3;
+  }
+
+  /* Small option pill */
+  .chip {
+    @apply relative inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-line bg-paper px-3.5 py-2 text-sm font-medium text-ink;
+  }
+  .chip-sm {
+    @apply px-3 py-1.5 text-[13px];
+  }
+
+  /* Monospace label (iA Writer Mono) */
+  .label {
+    @apply font-mono text-[11px] uppercase tracking-[0.08em] text-ink-3;
+  }
+
+  /* Rainbow edge used ONLY on the composer + dock */
+  .edge {
+    background: linear-gradient(115deg, #f7b733, #eba4da 42%, #9cc3ff 78%, #f7b733);
+  }
+  .edge-live {
+    background: linear-gradient(115deg, #f7b733, #eba4da 40%, #9cc3ff 75%, #f7b733);
+    background-size: 300% 100%;
+  }
+
+  /* Landing background */
+  .bg-grid {
+    background-image: linear-gradient(#e2d7c3 1px, transparent 1px),
+      linear-gradient(90deg, #e2d7c3 1px, transparent 1px);
+    background-size: 120px 120px;
+    opacity: 0.55;
+    -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 32%, #000 25%, transparent 78%);
+    mask-image: radial-gradient(ellipse 65% 55% at 50% 32%, #000 25%, transparent 78%);
+  }
+  .hero-glow {
+    background: radial-gradient(
+      closest-side,
+      rgba(247, 183, 51, 0.3),
+      rgba(235, 164, 218, 0.2) 55%,
+      transparent 78%
+    );
+    filter: blur(12px);
+  }
+
+  /* Loading skeleton */
+  .skeleton {
+    background: linear-gradient(90deg, #e6dbc7 25%, #f2eadb 50%, #e6dbc7 75%);
+    background-size: 200% 100%;
+    @apply animate-shimmer rounded-lg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }

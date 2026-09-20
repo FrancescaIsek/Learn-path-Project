@@ -1,11 +1,28 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Subject } from '@/types';
-import { createCustomSubject } from '@/data/subjects';
 
 const COMPLETED_KEY = 'learnpath_completed_topics';
 const CUSTOM_SUBJECTS_KEY = 'learnpath_custom_subjects';
+
+function readJSON<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as T) : fallback;
+  } catch (e) {
+    console.error(`Failed to read ${key} from localStorage:`, e);
+    return fallback;
+  }
+}
+
+function writeJSON(key: string, value: unknown) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (e) {
+    console.error(`Failed to save ${key} to localStorage:`, e);
+  }
+}
 
 export function useProgress() {
   const [completedTopicIds, setCompletedTopicIds] = useState<string[]>([]);
@@ -13,58 +30,31 @@ export function useProgress() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    try {
-      const storedCompleted = localStorage.getItem(COMPLETED_KEY);
-      if (storedCompleted) {
-        setCompletedTopicIds(JSON.parse(storedCompleted));
-      }
-
-      const storedCustom = localStorage.getItem(CUSTOM_SUBJECTS_KEY);
-      if (storedCustom) {
-        setCustomSubjects(JSON.parse(storedCustom));
-      }
-    } catch (e) {
-      console.error('Failed to read from localStorage:', e);
-    } finally {
-      setIsLoaded(true);
-    }
+    setCompletedTopicIds(readJSON<string[]>(COMPLETED_KEY, []));
+    setCustomSubjects(readJSON<Subject[]>(CUSTOM_SUBJECTS_KEY, []));
+    setIsLoaded(true);
   }, []);
 
-  const isCompleted = (topicId: string): boolean => {
-    return completedTopicIds.includes(topicId);
+  const isCompleted = useCallback(
+    (topicKey: string): boolean => completedTopicIds.includes(topicKey),
+    [completedTopicIds]
+  );
+
+  /** topicKey is `${subjectId}/${topicId}` (same as V1, so saved progress keeps working). */
+  const toggleCompletion = (topicKey: string) => {
+    const current = readJSON<string[]>(COMPLETED_KEY, []);
+    const updated = current.includes(topicKey)
+      ? current.filter((id) => id !== topicKey)
+      : [...current, topicKey];
+    writeJSON(COMPLETED_KEY, updated);
+    setCompletedTopicIds(updated);
   };
 
-  const toggleCompletion = (topicId: string) => {
-    setCompletedTopicIds((prev) => {
-      const isDone = prev.includes(topicId);
-      const updated = isDone
-        ? prev.filter((id) => id !== topicId)
-        : [...prev, topicId];
-
-      try {
-        localStorage.setItem(COMPLETED_KEY, JSON.stringify(updated));
-      } catch (e) {
-        console.error('Failed to save progress to localStorage:', e);
-      }
-      return updated;
-    });
-  };
-
-  const addCustomSubject = (title: string): Subject => {
-    const newSubject = createCustomSubject(title);
-    setCustomSubjects((prev) => {
-      const exists = prev.some((s) => s.id === newSubject.id);
-      if (exists) return prev;
-
-      const updated = [newSubject, ...prev];
-      try {
-        localStorage.setItem(CUSTOM_SUBJECTS_KEY, JSON.stringify(updated));
-      } catch (e) {
-        console.error('Failed to save custom subject to localStorage:', e);
-      }
-      return updated;
-    });
-    return newSubject;
+  const saveCustomSubject = (subject: Subject) => {
+    const current = readJSON<Subject[]>(CUSTOM_SUBJECTS_KEY, []);
+    const updated = [subject, ...current.filter((s) => s.id !== subject.id)];
+    writeJSON(CUSTOM_SUBJECTS_KEY, updated);
+    setCustomSubjects(updated);
   };
 
   return {
@@ -73,6 +63,6 @@ export function useProgress() {
     isCompleted,
     toggleCompletion,
     customSubjects,
-    addCustomSubject,
+    saveCustomSubject,
   };
 }

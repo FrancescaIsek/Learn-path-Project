@@ -1,380 +1,546 @@
 import { Subject } from '@/types';
+import { createCustomSubject } from '@/lib/customPath';
+import { slugify } from '@/lib/theme';
 
+/**
+ * Starter learning paths. Deliberately simple, everyday subjects.
+ * Each path has 4 topics; each topic has notes, exactly 3 key points and resources.
+ * Links are starting points (mostly Wikipedia + a few well-known sites) - worth a quick
+ * click-through before launch.
+ */
 export const STATIC_SUBJECTS: Subject[] = [
   {
-    id: 'psychology',
-    name: 'Psychology',
-    description: 'Understand the core principles of human mind, behavior, cognition, and social interaction.',
-    category: 'Social Sciences',
+    id: 'cooking-basics',
+    name: 'Cooking Basics',
+    tagline: 'Cook simple meals with confidence',
+    description:
+      'Learn the everyday skills that make cooking at home easy: knives, heat, seasoning and a few meals you can repeat.',
+    category: 'Food & Home',
+    color: 'tangerine',
+    art: 'cooking',
+    keywords: ['cooking', 'cook', 'cooking basics', 'learn to cook', 'kitchen basics', 'home cooking'],
     topics: [
       {
-        id: 'intro-to-mind-behavior',
-        title: '1. Introduction to Mind & Behavior',
-        shortDescription: 'Discover what psychology is and how scientific methods explore human behavior.',
+        id: 'kitchen-setup-knife-safety',
+        title: 'Kitchen setup & knife safety',
+        shortDescription: 'Set up a simple kitchen and learn to handle a knife safely.',
+        minutes: 35,
         notes: [
-          'Psychology is the scientific study of mind, mental processes, and human behavior. It seeks to answer how we perceive the world, why we feel emotions, and what drives human choices.',
-          'Rather than relying on intuition or common sense, psychological science uses empirical observation, structured experiments, and statistical analysis to validate theories about human experience.'
+          'You do not need a fancy kitchen to cook well. A sharp knife, a chopping board, one frying pan, one pot and a wooden spoon are enough for most everyday meals.',
+          'A sharp knife is safer than a dull one because it cuts with less force. Curl your fingertips under, keep the tip of the knife on the board, and cut slowly before you try to cut fast.',
         ],
         keyPoints: [
-          'Psychology bridges biological science, cognitive research, and social behavior.',
-          'Scientific methods separate validated psychological insights from popular myths.',
-          'Human development is shaped by the constant interaction of genetic predisposition and environment.'
+          'Start with five basics: a knife, a board, a pan, a pot and a spoon.',
+          'Hold the food with curled fingertips (the "claw grip") to protect your hand.',
+          'Set out and prep all your ingredients before you turn on the heat.',
+        ],
+        resources: [
+          { title: 'Kitchen knife (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Kitchen_knife', type: 'Reference' },
+          { title: 'Mise en place (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Mise_en_place', type: 'Reference' },
+        ],
+      },
+      {
+        id: 'heat-pans-simple-techniques',
+        title: 'Heat, pans & simple techniques',
+        shortDescription: 'Understand heat and try boiling, sautéing and roasting.',
+        minutes: 40,
+        notes: [
+          'Most home cooking uses just a few methods. Boiling cooks food in bubbling water, sautéing cooks small pieces quickly in a little oil, and roasting cooks food in the dry heat of an oven.',
+          'Heat is your main tool. High heat browns food and adds flavour, medium heat cooks food through gently, and low heat keeps sauces from burning. Preheating the pan is what stops food from sticking.',
+        ],
+        keyPoints: [
+          'Learn three methods first: boil, sauté and roast.',
+          'Preheat your pan before adding food, and do not overcrowd it.',
+          'Turn the heat down if food browns too fast on the outside but is raw inside.',
+        ],
+        resources: [
+          { title: 'Sauté (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Saut%C3%A9', type: 'Reference' },
+          { title: 'Cooking (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Cooking', type: 'Overview' },
+        ],
+      },
+      {
+        id: 'seasoning-and-tasting',
+        title: 'Seasoning & tasting',
+        shortDescription: 'Learn how salt, acid, fat and herbs make food taste right.',
+        minutes: 30,
+        notes: [
+          'Good cooking is mostly good seasoning. Salt makes flavours stronger, acid (like lemon juice or vinegar) makes food taste bright, and fat (like oil or butter) makes it feel rich.',
+          'Taste as you cook, not only at the end. Add a small amount, stir, taste again, and adjust. It is much easier to add more than to fix food that is too salty.',
+        ],
+        keyPoints: [
+          'Season in small steps and taste after each one.',
+          'If food tastes flat, try a pinch of salt or a squeeze of lemon.',
+          'Fresh herbs go in near the end; dried herbs can go in earlier.',
+        ],
+        resources: [{ title: 'Seasoning (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Seasoning', type: 'Reference' }],
+      },
+      {
+        id: 'first-five-meals',
+        title: 'Your first five meals',
+        shortDescription: 'Put it all together with simple meals you can repeat.',
+        minutes: 45,
+        notes: [
+          'Pick a small set of meals and repeat them until they feel easy. Scrambled eggs, a simple pasta, a vegetable stir-fry, rice with a sauce, and a tray of roasted vegetables and chicken cover a lot of ground.',
+          'Plan for the week, shop once, and cook one base (like rice or roasted vegetables) that works in more than one meal. This saves time and money and builds confidence.',
+        ],
+        keyPoints: [
+          'Master a few easy meals before trying new recipes.',
+          'Read the whole recipe before you start.',
+          'Cook a bigger batch of one base ingredient to use in two meals.',
+        ],
+        resources: [
+          { title: 'BBC Good Food', url: 'https://www.bbcgoodfood.com/', type: 'Recipes' },
+          { title: 'Serious Eats', url: 'https://www.seriouseats.com/', type: 'Guide' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'budgeting-basics',
+    name: 'Budgeting Basics',
+    tagline: 'Take control of your money, one step at a time',
+    description: 'See where your money goes, plan each month and build a small safety cushion.',
+    category: 'Money',
+    color: 'cobalt',
+    art: 'budget',
+    keywords: ['budgeting', 'budget', 'money', 'saving', 'saving money', 'personal finance', 'financial literacy', 'finance'],
+    topics: [
+      {
+        id: 'know-where-money-goes',
+        title: 'Know where your money goes',
+        shortDescription: 'Track a month of spending to see what is really happening.',
+        minutes: 30,
+        notes: [
+          'A budget starts with facts, not rules. For one month, write down everything you spend, even small things like snacks and transport. You can use a notebook, a notes app or a spreadsheet.',
+          'At the end of the month, sort what you spent into groups such as rent, food, transport, bills and fun. Most people are surprised by one or two groups.',
+        ],
+        keyPoints: [
+          'Track every expense for 30 days, big or small.',
+          'Sort spending into a few simple groups.',
+          'Look for one or two groups that are bigger than you expected.',
+        ],
+        resources: [{ title: 'Budget (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Budget', type: 'Reference' }],
+      },
+      {
+        id: 'build-a-monthly-budget',
+        title: 'Build a simple monthly budget',
+        shortDescription: 'Give your income a plan for the month.',
+        minutes: 40,
+        notes: [
+          'A budget is a plan for your money, written before the month starts. Start with your income, subtract the costs you must pay (needs), then decide how much goes to wants and to savings.',
+          'A popular starting point is the 50/30/20 idea: about half of income for needs, 30% for wants and 20% for savings or paying off debt. Treat it as a guide and adjust it to your life.',
+        ],
+        keyPoints: [
+          'List your income first, then your must-pay costs (needs).',
+          'Give wants and savings a set amount so they do not happen by accident.',
+          'Review the plan at the end of each month and adjust.',
         ],
         resources: [
           {
-            title: 'OpenStax Psychology (Free Open Textbook)',
-            url: 'https://openstax.org/details/books/psychology-2e',
-            type: 'Read'
+            title: 'Khan Academy: Personal finance',
+            url: 'https://www.khanacademy.org/college-careers-more/personal-finance',
+            type: 'Course',
           },
-          {
-            title: 'Simply Psychology: Core Concepts Guide',
-            url: 'https://www.simplypsychology.org',
-            type: 'Reference'
-          }
-        ]
+        ],
       },
       {
-        id: 'cognitive-processes-memory',
-        title: '2. Cognitive Processes & Memory',
-        shortDescription: 'Explore how the brain encodes, stores, retrieves, and processes information.',
+        id: 'start-an-emergency-fund',
+        title: 'Start an emergency fund',
+        shortDescription: 'Build a small cushion for surprises.',
+        minutes: 30,
         notes: [
-          'Cognitive psychology focuses on internal mental operations such as perception, attention, language processing, problem-solving, and memory formation.',
-          'Memory operates in distinct stages: sensory encoding, short-term working memory, and long-term consolidation. Understanding these mechanisms helps improve learning efficiency.'
+          'An emergency fund is money set aside for surprises, like a medical bill or a broken phone. Having it means a bad week does not turn into a debt problem.',
+          'Start small. Even a first goal of one week of expenses helps. Keep the money somewhere safe that you can reach quickly but will not spend by habit.',
         ],
         keyPoints: [
-          'Working memory has limited capacity and requires focused attention.',
-          'Active retrieval and spaced repetition significantly enhance long-term memory retention.',
-          'Cognitive heuristics allow fast decision-making but can introduce systematic mental biases.'
+          'Start with a small goal, such as one week of basic expenses.',
+          'Save a fixed amount as soon as you are paid, before you spend.',
+          'Only use the fund for real emergencies.',
         ],
-        resources: [
-          {
-            title: 'Scholarpedia: Cognitive Psychology Overview',
-            url: 'http://www.scholarpedia.org/article/Cognitive_psychology',
-            type: 'Article'
-          }
-        ]
+        resources: [{ title: 'Emergency fund (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Emergency_fund', type: 'Reference' }],
       },
       {
-        id: 'social-psychology-dynamics',
-        title: '3. Social Psychology & Group Dynamics',
-        shortDescription: 'Examine how social environments and group interactions influence individual behavior.',
+        id: 'spend-smart-avoid-debt',
+        title: 'Spend smart & avoid debt traps',
+        shortDescription: 'Make better spending choices and understand debt.',
+        minutes: 35,
         notes: [
-          'Social psychology studies how individual thoughts, feelings, and actions are shaped by the presence, expectations, and influences of other people.',
-          'Key phenomena include conformity, persuasion, group decision-making, and the powerful impact of social roles and immediate situations on personal conduct.'
+          'Small habits add up. Waiting a day before a non-essential purchase, comparing prices and checking subscriptions can free up money without making life feel restricted.',
+          'Debt is money you borrow and pay back with extra cost (interest). Borrowing is not always bad, but expensive debt grows fast, so pay off the highest-interest debt first when you can.',
         ],
         keyPoints: [
-          'Situational context often exerts a stronger influence on behavior than internal personality traits alone.',
-          'Cognitive dissonance occurs when actions contradict beliefs, driving people to change their attitudes.',
-          'Group dynamics can foster cooperation or lead to uncritical consensus (groupthink).'
+          'Wait 24 hours before buying anything that is not a need.',
+          'Cancel subscriptions and services you no longer use.',
+          'Understand the interest cost before you borrow.',
         ],
         resources: [
-          {
-            title: 'Social Psychology Network Resources',
-            url: 'https://www.socialpsychology.org',
-            type: 'Guide'
-          }
-        ]
+          { title: 'Debt (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Debt', type: 'Reference' },
+          { title: 'Compound interest (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Compound_interest', type: 'Reference' },
+        ],
       },
-      {
-        id: 'biological-basis-behavior',
-        title: '4. Biological Basis of Behavior',
-        shortDescription: 'Learn how neural circuits, neurotransmitters, and brain anatomy generate experiences.',
-        notes: [
-          'Biological psychology explores the physical foundation of thoughts and feelings. Neurons communicate via electrical signals and chemical neurotransmitters across synapses.',
-          'Brain structures like the amygdala, hippocampus, and prefrontal cortex specialized functions that govern emotion, memory formation, and executive planning.'
-        ],
-        keyPoints: [
-          'Neuroplasticity enables the adult brain to continuously adapt and form new neural pathways.',
-          'Neurotransmitters such as dopamine, serotonin, and GABA regulate mood, reward, and anxiety.',
-          'The central nervous system coordinates physical actions with internal mental states.'
-        ],
-        resources: [
-          {
-            title: 'BrainFacts.org: Fundamentals of Brain & Behavior',
-            url: 'https://www.brainfacts.org',
-            type: 'Resource'
-          }
-        ]
-      }
-    ]
+    ],
   },
   {
-    id: 'web-development',
-    name: 'Web Development',
-    description: 'Learn how modern websites and web applications are structured, styled, and programmed.',
-    category: 'Technology',
+    id: 'home-gardening',
+    name: 'Home Gardening',
+    tagline: 'Grow your first herbs and vegetables',
+    description: 'Grow herbs and vegetables at home, even in a small space like a balcony or windowsill.',
+    category: 'Outdoors',
+    color: 'pine',
+    art: 'garden',
+    keywords: ['gardening', 'garden', 'home gardening', 'plants', 'growing plants', 'vegetables', 'herbs'],
     topics: [
       {
-        id: 'html-semantic-structure',
-        title: '1. HTML & Semantic Web Structure',
-        shortDescription: 'Master the foundation of the web by structuring accessible content with HTML tags.',
+        id: 'sun-soil-space',
+        title: 'Sun, soil & space',
+        shortDescription: 'Choose a good spot and understand what plants need.',
+        minutes: 30,
         notes: [
-          'HyperText Markup Language (HTML) provides the raw building blocks for web pages. Semantic tags describe the meaning of content to browsers, search engines, and screen readers.',
-          'Using proper elements like <main>, <article>, <nav>, and <header> improves document accessibility, SEO, and maintainability.'
+          'Plants need light, water and good soil. Before buying anything, watch your space for a few days and note how many hours of direct sun it gets. Most vegetables and herbs want six or more hours.',
+          'You do not need a big yard. A sunny balcony, windowsill or a few containers with drainage holes work well. Good soil is loose, holds some moisture and lets extra water drain away.',
         ],
         keyPoints: [
-          'HTML forms the structural backbone of every page on the web.',
-          'Semantic tags provide contextual meaning rather than purely visual formatting.',
-          'Proper heading hierarchies and ARIA attributes make web pages accessible to all users.'
+          'Check how many hours of sun your space gets.',
+          'Use containers with drainage holes if you have no ground space.',
+          'Good soil is loose and drains well.',
         ],
         resources: [
-          {
-            title: 'MDN Web Docs: HTML Basics',
-            url: 'https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/HTML_basics',
-            type: 'Documentation'
-          }
-        ]
+          { title: 'Gardening (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Gardening', type: 'Overview' },
+          { title: 'Soil (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Soil', type: 'Reference' },
+        ],
       },
       {
-        id: 'css-layouts-styling',
-        title: '2. CSS Layouts & Responsive Design',
-        shortDescription: 'Transform plain HTML into visually engaging interfaces using Flexbox and Grid.',
+        id: 'choose-easy-plants',
+        title: 'Choose easy plants',
+        shortDescription: 'Pick forgiving plants that give quick wins.',
+        minutes: 30,
         notes: [
-          'Cascading Style Sheets (CSS) control typography, colors, spacing, and page layout across different screen sizes.',
-          'Modern layout systems like CSS Flexbox (one-dimensional) and CSS Grid (two-dimensional) enable flexible, mobile-friendly user interfaces.'
+          'Start with plants that grow fast and forgive mistakes. Mint, basil, spring onions, lettuce, tomatoes and peppers are popular first choices.',
+          'Match the plant to your space and sun. Leafy herbs and lettuce cope with less light, while tomatoes and peppers need plenty of sun. Buying small seedlings is easier than starting from seed.',
         ],
         keyPoints: [
-          'Mobile-first responsive design ensures content adapts smoothly from mobile screens to desktop monitors.',
-          'Flexbox handles linear component alignment, while CSS Grid manages overall page layouts.',
-          'CSS variables and clean utility classes keep design tokens consistent.'
+          'Start with two or three easy plants, not ten.',
+          'Match each plant to the light you have.',
+          'Seedlings are easier than seeds for a first try.',
         ],
-        resources: [
-          {
-            title: 'MDN Web Docs: Learn CSS',
-            url: 'https://developer.mozilla.org/en-US/docs/Learn/CSS',
-            type: 'Documentation'
-          }
-        ]
+        resources: [{ title: 'Container gardening (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Container_gardening', type: 'Reference' }],
       },
       {
-        id: 'javascript-core-logic',
-        title: '3. JavaScript Core Concepts',
-        shortDescription: 'Add interactivity and logic to web applications with modern JavaScript.',
+        id: 'planting-and-watering',
+        title: 'Planting & watering',
+        shortDescription: 'Plant properly and build a simple watering habit.',
+        minutes: 35,
         notes: [
-          'JavaScript is the programming language of the web. It enables dynamic user interactions, data fetching, DOM manipulation, and asynchronous tasks.',
-          'Understanding variables, functions, scope, event loops, promises, and array operations forms the cornerstone of frontend development.'
+          'Fill the pot with soil, make a hole about the size of the seedling’s roots, set the plant in, and press the soil gently around it. Water well after planting.',
+          'Overwatering is a common beginner mistake. Push a finger about two centimetres into the soil: if it feels dry, water; if it is damp, wait. Water at the base of the plant, ideally in the morning.',
         ],
         keyPoints: [
-          'Events listen for user interactions like clicks, inputs, and scrolls.',
-          'Asynchronous operations (Promises and async/await) handle network requests without blocking UI.',
-          'Functions and immutability foster clean, predictable code structures.'
+          'Plant at the same depth the seedling was growing before.',
+          'Check the soil with your finger before you water.',
+          'Water at the base, in the morning if you can.',
         ],
-        resources: [
-          {
-            title: 'javascript.info: The Modern JavaScript Tutorial',
-            url: 'https://javascript.info',
-            type: 'Tutorial'
-          }
-        ]
+        resources: [{ title: 'Royal Horticultural Society', url: 'https://www.rhs.org.uk/', type: 'Guide' }],
       },
       {
-        id: 'frontend-frameworks-architecture',
-        title: '4. Frontend Component Architecture',
-        shortDescription: 'Build modular, reusable UI components using modern frontend frameworks like React.',
+        id: 'care-pests-harvest',
+        title: 'Care, pests & harvest',
+        shortDescription: 'Look after your plants and enjoy what you grow.',
+        minutes: 35,
         notes: [
-          'Modern web applications rely on component-based architecture to split complex interfaces into manageable, stateful pieces.',
-          'Frameworks manage UI updates efficiently by reacting to state changes and re-rendering only modified components.'
+          'Check your plants a little every day. Remove yellow leaves, pick off pests by hand, and rinse leaves with water. A small routine catches problems early.',
+          'Harvest often. Picking herbs and leaves regularly encourages new growth, and ripe vegetables taste best when picked at the right time. Kitchen scraps can become compost to feed future plants.',
         ],
         keyPoints: [
-          'Components encapsulate structure, styling, and behavior into reusable units.',
-          'State represents dynamic data that changes over time based on user action.',
-          'Declarative programming allows developers to specify what the UI should look like for a given state.'
+          'Spend a few minutes each day checking your plants.',
+          'Harvest herbs and leaves often to help them grow more.',
+          'Compost kitchen scraps to make free plant food.',
         ],
-        resources: [
-          {
-            title: 'React Official Documentation',
-            url: 'https://react.dev/learn',
-            type: 'Documentation'
-          }
-        ]
-      }
-    ]
+        resources: [{ title: 'Compost (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Compost', type: 'Reference' }],
+      },
+    ],
   },
   {
-    id: 'financial-literacy',
-    name: 'Financial Literacy',
-    description: 'Build practical habits for budgeting, managing debt, investing, and long-term stability.',
-    category: 'Personal Development',
+    id: 'learn-to-draw',
+    name: 'Learn to Draw',
+    tagline: 'Learn to draw, one line at a time',
+    description: 'Build a steady drawing habit with simple shapes, careful looking and basic shading.',
+    category: 'Creative',
+    color: 'blush',
+    art: 'drawing',
+    keywords: ['drawing', 'draw', 'learn to draw', 'sketching', 'sketch', 'how to draw'],
     topics: [
       {
-        id: 'budgeting-cash-flow',
-        title: '1. Budgeting & Cash Flow Management',
-        shortDescription: 'Track income and expenses to take direct control of your personal finances.',
+        id: 'lines-shapes-pencil',
+        title: 'Lines, shapes & holding the pencil',
+        shortDescription: 'Warm up with lines, circles and basic shapes.',
+        minutes: 30,
         notes: [
-          'Financial literacy starts with understanding cash flow—the balance between income coming in and expenses going out each month.',
-          'Budgeting frameworks (such as 50/30/20 or zero-based budgeting) help prioritize essential needs, intentional savings, and lifestyle choices.'
+          'Every drawing is built from simple shapes: circles, squares, triangles and lines. Practising them loosens your hand and builds control.',
+          'Hold the pencil lightly, a little back from the tip, and draw long lines from your shoulder and elbow instead of only your wrist. Light lines are easy to fix.',
         ],
         keyPoints: [
-          'Tracking monthly cash flow prevents unintentional overspending.',
-          'Separating fixed needs from variable wants creates financial clarity.',
-          'Automating monthly savings ensures consistency without daily willpower.'
+          'Practise straight lines, curves, circles and boxes every day.',
+          'Draw lightly first, then darken the lines you want to keep.',
+          'Ten minutes a day beats one long session a week.',
         ],
         resources: [
-          {
-            title: 'Consumer Financial Protection Bureau: Budgeting Tools',
-            url: 'https://www.consumerfinance.gov/consumer-tools/educator-resources/youth-financial-education/teach-about-managing-money/budgeting',
-            type: 'Guide'
-          }
-        ]
+          { title: 'Drawing (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Drawing', type: 'Overview' },
+          { title: 'Drawabox: free lessons', url: 'https://drawabox.com/', type: 'Course' },
+        ],
       },
       {
-        id: 'credit-debt-management',
-        title: '2. Understanding Credit & Debt',
-        shortDescription: 'Learn how credit scores work and strategies to pay down high-interest debt efficiently.',
+        id: 'seeing-like-an-artist',
+        title: 'Seeing like an artist',
+        shortDescription: 'Learn to look carefully and get proportions right.',
+        minutes: 35,
         notes: [
-          'Credit reflects your borrowing reliability. Maintaining a strong credit score lowers borrowing costs for major life purchases like housing or vehicles.',
-          'High-interest debt (like credit cards) can compound rapidly. Strategies like the debt avalanche or debt snowball provide structured payoff plans.'
+          'Beginners often draw what they think something looks like instead of what they actually see. Slow down and study the object: its overall shape, its edges, and how big each part is compared with the others.',
+          'Break an object into simple shapes first. Compare sizes by holding your pencil up, and check angles and distances before adding any detail.',
         ],
         keyPoints: [
-          'Payment history and credit utilization ratio are the largest factors in credit scores.',
-          'High-interest consumer debt should be prioritized and eliminated quickly.',
-          'Borrowing responsibly is a tool for building long-term options, not funding daily inflation.'
+          'Draw what you see, not what you think you see.',
+          'Start with big simple shapes, then add details.',
+          'Compare sizes and angles by measuring with your pencil.',
         ],
-        resources: [
-          {
-            title: 'CFPB: Managing Credit & Debt',
-            url: 'https://www.consumerfinance.gov/consumer-tools/credit-reports-and-scores',
-            type: 'Resource'
-          }
-        ]
+        resources: [{ title: 'Perspective (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Perspective_(graphical)', type: 'Reference' }],
       },
       {
-        id: 'investing-fundamentals',
-        title: '3. Investing Fundamentals & Asset Classes',
-        shortDescription: 'Discover how compound interest and index investing build wealth over time.',
+        id: 'light-and-shadow',
+        title: 'Light & shadow',
+        shortDescription: 'Add depth with simple shading.',
+        minutes: 35,
         notes: [
-          'Investing puts money to work in assets like stocks, bonds, and broad market index funds to beat inflation and compound returns over decades.',
-          'Diversification reduces risk by spreading investments across hundreds of companies rather than picking individual stocks.'
+          'Shading makes flat shapes look solid. Decide where the light is coming from, then make the side facing away from the light darker and add a soft shadow on the ground.',
+          'Practise with a value scale: a row of boxes going from very light to very dark. Build the dark slowly with layers instead of pressing hard.',
         ],
         keyPoints: [
-          'Compound growth relies heavily on starting early and remaining consistent.',
-          'Low-cost broad index funds offer simple, highly effective market diversification.',
-          'Risk tolerance determines the balance between growth assets (stocks) and stability assets (bonds).'
+          'Pick one light direction and keep it the same.',
+          'Use light layers to build darker areas.',
+          'Add a shadow on the ground so objects do not float.',
         ],
-        resources: [
-          {
-            title: 'SEC Investor.gov: Introduction to Investing',
-            url: 'https://www.investor.gov/introduction-investing',
-            type: 'Educational'
-          }
-        ]
+        resources: [{ title: 'Shading (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Shading', type: 'Reference' }],
       },
       {
-        id: 'emergency-funds-risk',
-        title: '4. Emergency Funds & Risk Management',
-        shortDescription: 'Protect your financial plan against unexpected life events and market down turns.',
+        id: 'draw-a-still-life',
+        title: 'Draw a still life',
+        shortDescription: 'Put it all together with a few everyday objects.',
+        minutes: 45,
         notes: [
-          'An emergency fund consists of 3 to 6 months of liquid expenses saved in a high-yield account, shielding investments from panic selling during job loss or emergency expenses.',
-          'Insurance products (health, auto, disability, property) protect high-cost catastrophic risks.'
+          'A still life is a drawing of objects that stay still, like a cup, a fruit and a bottle. Put them near a window or lamp so the light is clear.',
+          'Work in stages: a light outline of the shapes, check proportions, add shading, then finish with a few darker lines. It does not need to be perfect; notice what you would change next time.',
         ],
         keyPoints: [
-          'An emergency fund provides psychological peace of mind and liquid safety.',
-          'Insurance should cover catastrophic losses that would otherwise break personal solvency.',
-          'A resilient financial plan anticipates unexpected economic disruptions.'
+          'Choose two or three simple objects with a clear light.',
+          'Work in stages: shapes, proportions, shading, details.',
+          'Keep your drawings so you can compare your progress.',
         ],
-        resources: [
-          {
-            title: 'Investor.gov: Building an Emergency Savings Plan',
-            url: 'https://www.investor.gov',
-            type: 'Guide'
-          }
-        ]
-      }
-    ]
+        resources: [{ title: 'Still life (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Still_life', type: 'Reference' }],
+      },
+    ],
   },
   {
-    id: 'data-science',
-    name: 'Data Science',
-    description: 'Learn how to analyze raw data, extract insights, and make data-driven predictions.',
-    category: 'Computer Science',
+    id: 'public-speaking',
+    name: 'Public Speaking',
+    tagline: 'Speak clearly, even when you are nervous',
+    description: 'Speak with clarity and confidence, from short talks at work to bigger presentations.',
+    category: 'Communication',
+    color: 'marigold',
+    art: 'speaking',
+    keywords: ['public speaking', 'speaking', 'presentation', 'presentations', 'presenting', 'speech'],
     topics: [
       {
-        id: 'data-fundamentals-stats',
-        title: '1. Data Fundamentals & Statistics',
-        shortDescription: 'Understand summary statistics, probability, and hypothesis testing.',
+        id: 'calm-your-nerves',
+        title: 'Calm your nerves',
+        shortDescription: 'Understand nerves and use simple ways to settle them.',
+        minutes: 30,
         notes: [
-          'Data science combines domain context, computer programming, and statistical theory to extract meaningful knowledge from noisy datasets.',
-          'Descriptive statistics (mean, median, standard deviation) summarize data distributions, while inferential statistics let you draw broader conclusions.'
+          'Feeling nervous before speaking is normal. Your body releases energy to help you perform, which can feel like a racing heart or shaky hands.',
+          'Slow breathing, a short warm-up, and knowing your first sentence by heart help a lot. Thinking about helping your audience, instead of being judged, also takes pressure off.',
         ],
         keyPoints: [
-          'Clean data and sound statistical reasoning prevent misleading conclusions.',
-          'Understanding variance and correlation is fundamental to pattern recognition.',
-          'Sample representation determines whether insights generalize to larger populations.'
+          'Nerves are normal and are often invisible to the audience.',
+          'Breathe in for four counts and out for six before you begin.',
+          'Memorise your first sentence so you start strongly.',
         ],
-        resources: [
-          {
-            title: 'Khan Academy: Statistics & Probability',
-            url: 'https://www.khanacademy.org/math/statistics-probability',
-            type: 'Course'
-          }
-        ]
+        resources: [{ title: 'Glossophobia (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Glossophobia', type: 'Reference' }],
       },
       {
-        id: 'eda-visualization',
-        title: '2. Exploratory Data Analysis & Visualization',
-        shortDescription: 'Clean raw data and communicate patterns through clear charts and graphics.',
+        id: 'structure-a-simple-talk',
+        title: 'Structure a simple talk',
+        shortDescription: 'Use an easy opening, three points and a closing.',
+        minutes: 40,
         notes: [
-          'Exploratory Data Analysis (EDA) involves inspecting datasets for missing values, outliers, distributions, and hidden relationships.',
-          'Data visualization translates numerical distributions into intuitive charts (histograms, scatter plots, bar charts) that tell a clear story.'
+          'A clear structure helps both you and the audience. A simple shape is: an opening that says what the talk is about, up to three main points, and a closing that repeats the key message.',
+          'Three is a useful number because people remember short lists easily. For each point, add one example or short story so it feels real.',
         ],
         keyPoints: [
-          'Data cleaning usually consumes the majority of a data project timeline.',
-          'Visualizations should make key trends immediately obvious without clutter.',
-          'Detecting outliers early protects models from severe skew.'
+          'Say what you will talk about, talk about it, then say what you talked about.',
+          'Limit yourself to three main points.',
+          'Support each point with one example or story.',
         ],
-        resources: [
-          {
-            title: 'Kaggle Learn: Data Visualization',
-            url: 'https://www.kaggle.com/learn/data-visualization',
-            type: 'Interactive'
-          }
-        ]
+        resources: [{ title: 'Rule of three (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Rule_of_three_(writing)', type: 'Reference' }],
       },
       {
-        id: 'machine-learning-basics',
-        title: '3. Machine Learning Principles',
-        shortDescription: 'Explore supervised learning, classification, regression, and model evaluation.',
+        id: 'voice-pace-body-language',
+        title: 'Voice, pace & body language',
+        shortDescription: 'Sound clear and look relaxed.',
+        minutes: 35,
         notes: [
-          'Machine Learning algorithms detect patterns in training data to make predictions on unseen future data without explicit step-by-step rules.',
-          'Supervised learning trains on labeled data (e.g. regression for price prediction, classification for spam detection).'
+          'Speak a little slower than feels natural and pause between ideas. Pauses give the audience time to think and give you time to breathe.',
+          'Stand steady, keep your shoulders relaxed, look at people in different parts of the room, and use your hands naturally. Aim to sound like yourself, just a bit more deliberate.',
         ],
         keyPoints: [
-          'Train/test splits prevent models from memorizing data (overfitting).',
-          'Feature selection dictates model quality as much as algorithm selection.',
-          'Evaluation metrics (precision, recall, RMSE) measure real-world performance.'
+          'Slow down and use pauses.',
+          'Make eye contact with different people, one at a time.',
+          'Keep your posture open and your hands relaxed.',
         ],
-        resources: [
-          {
-            title: 'Scikit-Learn Machine Learning Guide',
-            url: 'https://scikit-learn.org/stable/tutorial/index.html',
-            type: 'Documentation'
-          }
-        ]
+        resources: [{ title: 'Nonverbal communication (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Nonverbal_communication', type: 'Reference' }],
       },
       {
-        id: 'data-ethics-storytelling',
-        title: '4. Data Ethics & Storytelling',
-        shortDescription: 'Deliver actionable recommendations responsibly with attention to bias and privacy.',
+        id: 'practise-and-get-feedback',
+        title: 'Practise & get feedback',
+        shortDescription: 'Rehearse, record yourself and improve.',
+        minutes: 40,
         notes: [
-          'Technical insights are only valuable if stakeholders can understand them and act on them safely and ethically.',
-          'Data ethics considers user privacy, algorithmic bias, fairness, transparency, and the societal consequences of automated models.'
+          'Practise out loud, not just in your head. Speak your talk to a mirror or a friend, or record it on your phone, then watch it once and choose one thing to improve.',
+          'Look for low-pressure chances to speak, such as a team meeting or a local club like Toastmasters. Every short talk builds experience.',
         ],
         keyPoints: [
-          'Algorithmic models can amplify historical biases present in training data.',
-          'Clear data storytelling translates technical metrics into real-world choices.',
-          'Privacy and security must be designed into data systems from the start.'
+          'Practise out loud at least three times.',
+          'Record yourself and change one thing at a time.',
+          'Take small speaking chances to build confidence.',
+        ],
+        resources: [{ title: 'Toastmasters International', url: 'https://www.toastmasters.org/', type: 'Community' }],
+      },
+    ],
+  },
+  {
+    id: 'photography-basics',
+    name: 'Photography Basics',
+    tagline: 'Take better photos with what you already have',
+    description: 'Take better photos with the phone or camera you already own.',
+    category: 'Creative',
+    color: 'ink',
+    art: 'photo',
+    keywords: ['photography', 'photography basics', 'photo', 'photos', 'taking photos', 'camera'],
+    topics: [
+      {
+        id: 'know-your-camera',
+        title: 'Know your camera',
+        shortDescription: 'Learn the basics of your phone or camera.',
+        minutes: 30,
+        notes: [
+          'The best camera is the one you have with you. Learn where your controls are: how to focus, change exposure, switch lenses and turn on the grid lines.',
+          'Exposure simply means how bright or dark a photo is. Tap the screen to focus, then slide up or down to make the picture brighter or darker before you shoot. Clean your lens first.',
+        ],
+        keyPoints: [
+          'Turn on the grid lines in your camera settings.',
+          'Tap to focus and slide to adjust brightness.',
+          'Wipe the lens before you shoot.',
+        ],
+        resources: [{ title: 'Exposure (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Exposure_(photography)', type: 'Reference' }],
+      },
+      {
+        id: 'work-with-light',
+        title: 'Work with light',
+        shortDescription: 'Notice light and use it to make photos look better.',
+        minutes: 35,
+        notes: [
+          'Photography means writing with light. Soft light, such as near a window or on a cloudy day, is flattering and easy to use. Harsh midday sun creates strong shadows.',
+          'The hour after sunrise and the hour before sunset, often called golden hour, gives warm, soft light that makes almost everything look better. Try to keep the light coming from the side or slightly behind your subject.',
+        ],
+        keyPoints: [
+          'Soft light is easiest for beginners.',
+          'Try shooting in the hour after sunrise or before sunset.',
+          'Avoid pointing the camera straight at bright light unless you want a silhouette.',
+        ],
+        resources: [{ title: 'Golden hour (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Golden_hour_(photography)', type: 'Reference' }],
+      },
+      {
+        id: 'composition-basics',
+        title: 'Composition basics',
+        shortDescription: 'Frame your photos so they look balanced and interesting.',
+        minutes: 35,
+        notes: [
+          'Composition is how you arrange things inside the frame. A popular guide is the rule of thirds: imagine the frame split into a grid of nine, and place your subject on a line or where lines cross instead of dead centre.',
+          'Also try getting closer, changing your angle, and looking for leading lines such as roads or fences that guide the eye. Remove distractions from the background before you press the button.',
+        ],
+        keyPoints: [
+          'Place your subject off-centre using the rule of thirds.',
+          'Get closer and change your angle.',
+          'Check the background before you shoot.',
         ],
         resources: [
-          {
-            title: 'Data Ethics Guidelines (The Royal Statistical Society)',
-            url: 'https://rss.org.uk',
-            type: 'Article'
-          }
-        ]
-      }
-    ]
-  }
+          { title: 'Rule of thirds (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Rule_of_thirds', type: 'Reference' },
+          { title: 'Composition (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Composition_(visual_arts)', type: 'Reference' },
+        ],
+      },
+      {
+        id: 'edit-and-share',
+        title: 'Edit & share',
+        shortDescription: 'Do simple edits and choose your best photos.',
+        minutes: 30,
+        notes: [
+          'Editing can be simple. Crop to improve the composition, straighten the horizon, and gently adjust brightness and contrast. Small changes look more natural than big ones.',
+          'Take many photos but share only your best. Compare similar shots, pick one, and keep a folder of favourites to see how you improve over time.',
+        ],
+        keyPoints: [
+          'Crop, straighten and adjust brightness first.',
+          'Make small edits so the photo still looks natural.',
+          'Share your best few, not all of them.',
+        ],
+        resources: [{ title: 'Photography (Wikipedia)', url: 'https://en.wikipedia.org/wiki/Photography', type: 'Overview' }],
+      },
+    ],
+  },
 ];
+
+/**
+ * Words that are too wide to build a good path from. When someone types one of these
+ * the composer suggests narrower, everyday alternatives (they can still continue anyway).
+ */
+export const BROAD_TOPICS: Record<string, string[]> = {
+  science: ['Basic chemistry', 'Astronomy basics', 'Human body basics', 'Weather and climate'],
+  art: ['Watercolor basics', 'Color theory', 'Sketching', 'Calligraphy'],
+  math: ['Fractions', 'Basic algebra', 'Mental math', 'Percentages'],
+  maths: ['Fractions', 'Basic algebra', 'Mental math', 'Percentages'],
+  mathematics: ['Fractions', 'Basic algebra', 'Mental math', 'Percentages'],
+  history: ['Ancient Egypt', 'The Roman Empire', 'World War 2 basics', 'The history of money'],
+  business: ['Starting a small business', 'Basic marketing', 'Customer service', 'Bookkeeping basics'],
+  language: ['Basic French', 'Basic Spanish', 'English grammar', 'Better writing'],
+  languages: ['Basic French', 'Basic Spanish', 'English grammar', 'Better writing'],
+  music: ['Guitar basics', 'Piano basics', 'Reading music', 'Singing basics'],
+  health: ['Healthy eating', 'Better sleep', 'Home workouts', 'Stretching basics'],
+  fitness: ['Home workouts', 'Running for beginners', 'Stretching basics', 'Basic yoga'],
+  technology: ['Using a smartphone', 'Typing', 'Email basics', 'Spreadsheet basics'],
+  tech: ['Using a smartphone', 'Typing', 'Email basics', 'Spreadsheet basics'],
+  sports: ['Running for beginners', 'Swimming basics', 'Football basics', 'Basic yoga'],
+  everything: ['Cooking basics', 'Budgeting basics', 'Home gardening', 'Learn to draw'],
+};
+
+function normalise(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+/** If what someone types clearly means one of the starter paths, use that path. */
+export function findStaticSubject(query: string): Subject | undefined {
+  const q = normalise(query);
+  if (!q) return undefined;
+  return STATIC_SUBJECTS.find(
+    (s) =>
+      s.id === slugify(q) ||
+      normalise(s.name) === q ||
+      (s.keywords ?? []).some((k) => normalise(k) === q)
+  );
+}
+
+export function getBroadSuggestions(query: string): string[] | null {
+  return BROAD_TOPICS[normalise(query)] ?? null;
+}
+
+export function isStaticId(id: string): boolean {
+  return STATIC_SUBJECTS.some((s) => s.id === id.toLowerCase());
+}
 
 export function getSubjectById(id: string, customSubjects: Subject[] = []): Subject | undefined {
   const normalizedId = id.toLowerCase();
@@ -384,112 +550,6 @@ export function getSubjectById(id: string, customSubjects: Subject[] = []): Subj
   const customMatch = customSubjects.find((s) => s.id === normalizedId);
   if (customMatch) return customMatch;
 
-  // Fallback: Generate a structured path dynamically for any custom subject title!
-  return createCustomSubject(id);
-}
-
-export function createCustomSubject(title: string): Subject {
-  const cleanTitle = title.trim();
-  const id = cleanTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'custom-subject';
-  
-  const formattedName = cleanTitle.charAt(0).toUpperCase() + cleanTitle.slice(1);
-
-  return {
-    id,
-    name: formattedName,
-    description: `A structured step-by-step beginner path to master ${formattedName}.`,
-    category: 'Custom Learning Path',
-    isCustom: true,
-    topics: [
-      {
-        id: `${id}-1`,
-        title: `1. Fundamentals of ${formattedName}`,
-        shortDescription: `Understand the basic concepts, terminology, and core scope of ${formattedName}.`,
-        notes: [
-          `${formattedName} is a broad domain with key foundational concepts. Learning starts by establishing a clear vocabulary and understanding the big picture.`,
-          `By breaking ${formattedName} into structured components, you build a mental framework that makes advanced concepts much easier to absorb.`
-        ],
-        keyPoints: [
-          `Identify the core objectives and main branches of ${formattedName}.`,
-          `Master fundamental terminology before moving into practical application.`,
-          `Establish a consistent daily or weekly review habit to solidify basic ideas.`
-        ],
-        resources: [
-          {
-            title: `Wikipedia: ${formattedName} Overview`,
-            url: `https://en.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(formattedName)}`,
-            type: 'Reference'
-          },
-          {
-            title: `Open Educational Resources for ${formattedName}`,
-            url: `https://www.merlot.org/merlot/materials.htm?keywords=${encodeURIComponent(formattedName)}`,
-            type: 'Library'
-          }
-        ]
-      },
-      {
-        id: `${id}-2`,
-        title: `2. Core Principles & Frameworks`,
-        shortDescription: `Explore the key mechanisms and models that govern ${formattedName}.`,
-        notes: [
-          `Once basic terminology is clear, focus turns to how concepts in ${formattedName} connect and operate in practice.`,
-          `Analyzing real-world examples helps transition theoretical knowledge into practical comprehension.`
-        ],
-        keyPoints: [
-          `Understand cause-and-effect relationships within ${formattedName}.`,
-          `Study standard methods and frameworks used by practitioners.`,
-          `Practice explaining core concepts in simple terms to test your understanding.`
-        ],
-        resources: [
-          {
-            title: `Khan Academy Search: ${formattedName}`,
-            url: `https://www.khanacademy.org/search?page_search_query=${encodeURIComponent(formattedName)}`,
-            type: 'Tutorial'
-          }
-        ]
-      },
-      {
-        id: `${id}-3`,
-        title: `3. Practical Applications & Exercises`,
-        shortDescription: `Apply your understanding of ${formattedName} through hands-on practice.`,
-        notes: [
-          `Passive reading is helpful, but active application is where deep learning occurs in ${formattedName}.`,
-          `Work through simple exercises, case studies, or small projects that isolate specific skills.`
-        ],
-        keyPoints: [
-          `Solve beginner-level problems to test theoretical understanding.`,
-          `Review mistakes carefully to pinpoint knowledge gaps.`,
-          `Combine multiple sub-concepts into a small cohesive project.`
-        ],
-        resources: [
-          {
-            title: `Coursera Courses on ${formattedName}`,
-            url: `https://www.coursera.org/search?query=${encodeURIComponent(formattedName)}`,
-            type: 'Course Directory'
-          }
-        ]
-      },
-      {
-        id: `${id}-4`,
-        title: `4. Advanced Concepts & Next Steps`,
-        shortDescription: `Explore specialized sub-topics and continue your journey in ${formattedName}.`,
-        notes: [
-          `With a solid foundation in ${formattedName}, you can now dive into specialized areas that match your personal or professional interests.`,
-          `Continued growth comes from engaging with communities, advanced guides, and ongoing practice.`
-        ],
-        keyPoints: [
-          `Identify specialized areas within ${formattedName} for deeper study.`,
-          `Keep up with recent developments and recommended reading.`,
-          `Apply acquired knowledge to real-world scenarios.`
-        ],
-        resources: [
-          {
-            title: `Google Scholar Research Papers: ${formattedName}`,
-            url: `https://scholar.google.com/scholar?q=${encodeURIComponent(formattedName)}`,
-            type: 'Academic'
-          }
-        ]
-      }
-    ]
-  };
+  // Same fallback as V1: a link to /path/some-topic still builds a path on any device.
+  return createCustomSubject(id.replace(/-/g, ' '));
 }

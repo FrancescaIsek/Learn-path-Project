@@ -1,208 +1,152 @@
 'use client';
 
 import Link from 'next/link';
-import { getSubjectById } from '@/data/subjects';
+import { getSubjectById, isStaticId } from '@/data/subjects';
 import { useProgress } from '@/hooks/useProgress';
+import { AppNav } from '@/components/SiteNav';
+import { Icon } from '@/components/Icon';
+import { formatMinutes, stripNumber, topicMinutes } from '@/lib/theme';
 
 interface PageProps {
-  params: {
-    subjectId: string;
-    topicId: string;
-  };
+  params: { subjectId: string; topicId: string };
+}
+
+function Section({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
+  return (
+    <section className="rounded-card border border-line bg-surface p-6 sm:p-8">
+      <div className="mb-5 flex items-center gap-3 border-b border-line pb-4">
+        <span className="grid h-7 w-7 place-items-center rounded-lg bg-sand font-mono text-xs font-bold">{n}</span>
+        <h2 className="text-xl font-semibold tracking-[-0.03em]">{title}</h2>
+      </div>
+      {children}
+    </section>
+  );
 }
 
 export default function TopicPage({ params }: PageProps) {
   const { subjectId, topicId } = params;
   const { customSubjects, isCompleted, toggleCompletion, isLoaded } = useProgress();
 
+  if (!isLoaded && !isStaticId(subjectId)) {
+    return (
+      <div>
+        <AppNav />
+        <div className="mx-auto max-w-[760px] px-4 sm:px-8">
+          <div className="skeleton h-56 w-full !rounded-card" />
+        </div>
+      </div>
+    );
+  }
+
   const subject = getSubjectById(subjectId, customSubjects);
   const topic = subject?.topics.find((t) => t.id === topicId);
 
   if (!subject || !topic) {
     return (
-      <div className="text-center py-16 space-y-4">
-        <h1 className="text-2xl font-bold text-slate-900">Topic Not Found</h1>
-        <p className="text-slate-600">The requested topic could not be found.</p>
-        <Link
-          href={`/path/${subjectId}`}
-          className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-        >
-          &larr; Back to Learning Path
-        </Link>
+      <div>
+        <AppNav />
+        <div className="mx-auto max-w-[560px] px-4 py-20 text-center">
+          <h1 className="text-3xl font-bold tracking-[-0.04em]">Topic not found</h1>
+          <p className="mt-2 text-ink-2">We could not find that topic.</p>
+          <Link href={`/path/${subjectId}`} className="btn mt-6">
+            <Icon name="arrow-left" /> Back to the path
+          </Link>
+        </div>
       </div>
     );
   }
 
   const topicKey = `${subject.id}/${topic.id}`;
   const done = isLoaded && isCompleted(topicKey);
-
-  // Find next topic if available
   const currentIndex = subject.topics.findIndex((t) => t.id === topic.id);
   const nextTopic = subject.topics[currentIndex + 1];
 
   return (
-    <div className="space-y-8">
-      {/* Breadcrumb Navigation */}
-      <div className="flex items-center justify-between">
-        <Link
-          href={`/path/${subject.id}`}
-          className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to {subject.name} Path
-        </Link>
-
-        <span className="text-xs font-medium text-slate-500">
-          Topic {currentIndex + 1} of {subject.topics.length}
-        </span>
-      </div>
-
-      {/* Main Topic Header */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <span className="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-blue-50 text-blue-700">
-            {subject.name}
+    <div>
+      <AppNav />
+      <div className="mx-auto max-w-[760px] space-y-5 px-4 pb-20 sm:px-8">
+        <div className="flex items-center justify-between">
+          <Link href={`/path/${subject.id}`} className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-2 hover:text-ink">
+            <Icon name="arrow-left" /> {subject.name}
+          </Link>
+          <span className="label">
+            Topic {String(currentIndex + 1).padStart(2, '0')} of {String(subject.topics.length).padStart(2, '0')}
           </span>
-
-          {/* Mark Complete Button */}
-          <button
-            onClick={() => toggleCompletion(topicKey)}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 border shadow-sm ${
-              done
-                ? 'bg-emerald-500 text-white border-emerald-600 hover:bg-emerald-600'
-                : 'bg-slate-900 text-white border-slate-900 hover:bg-slate-800'
-            }`}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-            </svg>
-            <span>{done ? 'Marked as Complete' : 'Mark as Complete'}</span>
-          </button>
         </div>
 
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">
-          {topic.title}
-        </h1>
-        <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-          {topic.shortDescription}
-        </p>
-      </div>
-
-      {/* Section 1: Short Learning Notes */}
-      <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
-        <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-          <div className="w-6 h-6 rounded bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">
-            1
-          </div>
-          <h2 className="text-lg font-bold text-slate-900">
-            Learning Notes
-          </h2>
-        </div>
-
-        <div className="space-y-3 text-slate-700 text-sm sm:text-base leading-relaxed">
-          {topic.notes.map((paragraph, i) => (
-            <p key={i}>{paragraph}</p>
-          ))}
-        </div>
-      </section>
-
-      {/* Section 2: Three Key Things to Understand */}
-      <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
-        <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-          <div className="w-6 h-6 rounded bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">
-            2
-          </div>
-          <h2 className="text-lg font-bold text-slate-900">
-            3 Key Things to Understand
-          </h2>
-        </div>
-
-        <ul className="space-y-3">
-          {topic.keyPoints.slice(0, 3).map((point, i) => (
-            <li key={i} className="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 border border-slate-100">
-              <span className="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
-                {i + 1}
-              </span>
-              <span className="text-xs sm:text-sm font-medium text-slate-800 leading-normal">
-                {point}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {/* Section 3: External Useful Resources */}
-      <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
-        <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-          <div className="w-6 h-6 rounded bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">
-            3
-          </div>
-          <h2 className="text-lg font-bold text-slate-900">
-            Recommended Resources
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 gap-3">
-          {topic.resources.map((res, i) => (
-            <a
-              key={i}
-              href={res.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-center justify-between p-4 rounded-xl border border-slate-200 hover:border-blue-300 hover:bg-blue-50/30 transition-all"
+        {/* Header */}
+        <div className="rounded-cover bg-sand p-6 sm:p-9">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <span className="label">{subject.name}</span>
+            <button
+              onClick={() => toggleCompletion(topicKey)}
+              className={`btn btn-sm ${done ? '!border-pine !bg-pine' : ''}`}
             >
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700 group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors">
-                    {res.type || 'Resource'}
-                  </span>
-                </div>
-                <div className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-                  {res.title}
-                </div>
-                <div className="text-xs text-slate-500 truncate max-w-md">
-                  {res.url}
-                </div>
-              </div>
-
-              <div className="text-blue-600 shrink-0 group-hover:translate-x-1 transition-transform">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </div>
-            </a>
-          ))}
+              <Icon name="check" /> {done ? 'Marked complete' : 'Mark as complete'}
+            </button>
+          </div>
+          <h1 className="mb-3 mt-5 text-[34px] font-bold leading-[1.05] tracking-[-0.045em] sm:text-[48px]">
+            {stripNumber(topic.title)}
+          </h1>
+          <p className="max-w-[560px] text-[17px] leading-relaxed text-ink-2">{topic.shortDescription}</p>
+          <div className="mt-5 inline-flex items-center gap-1.5 text-sm text-ink-3">
+            <Icon name="clock" /> About {formatMinutes(topicMinutes(topic))}
+          </div>
         </div>
-      </section>
 
-      {/* Footer Navigation Bar */}
-      <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-200">
-        <Link
-          href={`/path/${subject.id}`}
-          className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs sm:text-sm font-medium hover:bg-slate-100 transition-colors text-center"
-        >
-          &larr; Back to {subject.name} Path
-        </Link>
+        <Section n={1} title="Learning notes">
+          <div className="space-y-4 text-[16.5px] leading-[1.7] text-ink">
+            {topic.notes.map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
+          </div>
+        </Section>
 
-        <div className="w-full sm:w-auto flex items-center gap-3">
+        <Section n={2} title="3 key things to understand">
+          <ul className="space-y-3">
+            {topic.keyPoints.slice(0, 3).map((point, i) => (
+              <li key={i} className="flex items-start gap-3.5 rounded-2xl border border-line bg-paper p-4">
+                <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-ink font-mono text-xs font-bold text-paper">
+                  {i + 1}
+                </span>
+                <span className="text-[15.5px] font-medium leading-snug">{point}</span>
+              </li>
+            ))}
+          </ul>
+        </Section>
+
+        <Section n={3} title="Recommended resources">
+          <div className="grid gap-3">
+            {topic.resources.map((res, i) => (
+              <a
+                key={i}
+                href={res.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center justify-between gap-4 rounded-2xl border border-line bg-paper p-4 transition-colors hover:border-ink-3"
+              >
+                <div className="min-w-0">
+                  <span className="label">{res.type || 'Resource'}</span>
+                  <div className="mt-1 font-semibold tracking-[-0.02em]">{res.title}</div>
+                  <div className="mt-0.5 truncate text-[13px] text-ink-3">{res.url}</div>
+                </div>
+                <Icon name="external" className="h-5 w-5 shrink-0 text-ink-2 transition-transform group-hover:translate-x-0.5" />
+              </a>
+            ))}
+          </div>
+        </Section>
+
+        <div className="flex flex-col items-stretch justify-between gap-3 border-t border-line pt-6 sm:flex-row sm:items-center">
+          <Link href={`/path/${subject.id}`} className="btn btn-line">
+            <Icon name="arrow-left" /> Back to path
+          </Link>
           {nextTopic ? (
-            <Link
-              href={`/path/${subject.id}/${nextTopic.id}`}
-              className="w-full sm:w-auto px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs sm:text-sm font-semibold transition-colors text-center flex items-center justify-center gap-1.5 shadow-sm"
-            >
-              <span>Next Topic: {nextTopic.title.replace(/^\d+\.\s*/, '')}</span>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
+            <Link href={`/path/${subject.id}/${nextTopic.id}`} className="btn">
+              Next: {stripNumber(nextTopic.title)} <Icon name="arrow" />
             </Link>
           ) : (
-            <Link
-              href={`/path/${subject.id}`}
-              className="w-full sm:w-auto px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs sm:text-sm font-semibold transition-colors text-center"
-            >
-              Finish Path &rarr;
+            <Link href={`/path/${subject.id}`} className="btn !border-pine !bg-pine">
+              Finish path <Icon name="arrow" />
             </Link>
           )}
         </div>
