@@ -81,3 +81,15 @@ The complete flow is:
 Home → Learning Path → Topic → Mark Complete → Learning Path
 
 The project now has a public repository, a case-study README, a project journal, and a live deployment.
+
+## September 23, 2026
+
+### Upgrading to LearnPath v2
+
+The goal was to replace the v1 version of LearnPath with the new v2 implementation.
+
+* **Separate Development**: LearnPath v2 was developed in a separate local folder from v1, with the actual v2 project located at `Downloads\learnpath-v2\learnpath-v2`.
+* **Local Testing**: v2 was successfully run locally using `npm.cmd run dev`. Since ports 3000 and 3001 were already in use, v2 ran on port 3002.
+* **Repository Sync**: v2 was already connected to the existing GitHub repository `FrancescaIsek/Learn-path-Project`. The local branch was initially one commit behind `origin/main`, so remote changes were fetched and synced safely before committing the v2 work.
+* **Commit & Push**: The v2 changes were committed with the message `Update LearnPath to v2` (commit hash: `99f13b3`) and successfully pushed to the existing `main` branch.
+
