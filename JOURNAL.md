@@ -93,3 +93,16 @@ The goal was to replace the v1 version of LearnPath with the new v2 implementati
 * **Repository Sync**: v2 was already connected to the existing GitHub repository `FrancescaIsek/Learn-path-Project`. The local branch was initially one commit behind `origin/main`, so remote changes were fetched and synced safely before committing the v2 work.
 * **Commit & Push**: The v2 changes were committed with the message `Update LearnPath to v2` (commit hash: `99f13b3`) and successfully pushed to the existing `main` branch.
 
+## October 8, 2026
+
+### Mobile responsiveness, end-to-end flow verification, and ship log
+
+Today I verified and polished the LearnPath v2 implementation across the entire flow:
+
+* **Clean Production Build**: Confirmed Next.js 14 production build compiles and generates static routes cleanly without warnings or errors.
+* **Responsive Layout Polish (375px)**: Audited all screens at 375px width (iPhone viewport). Resolved horizontal layout overflows in the Composer sizing twin, Header Dock capsule, Module Cards, and Topic detail resource cards.
+* **Automated End-to-End Verification**: Tested the full user flow (Landing → Composer → Building Animation → Path Overview → Topic Detail → Mark Complete → My Paths) using automated headless Chrome testing to ensure zero layout regressions (`scrollWidth <= clientWidth`).
+* **Live Deployment Verification**: Verified that the live production deployment at `https://learn-path-project-delta.vercel.app` is healthy and synchronized with the repository.
+* **Ship Log & Documentation**: Created `SHIP_LOG.md` to document real architectural decisions and updated `README.md` with current stack and honest capability boundaries.
+
+
