@@ -23,12 +23,12 @@ export function ModuleCard({ subject, topic, index, state, expanded, isLast }: P
 
   if (expanded) {
     return (
-      <div className="relative mb-4 rounded-card border border-line bg-surface p-6 pb-5 shadow-[0_1px_0_#fff_inset]">
+      <div className="relative mb-4 rounded-card border border-line bg-surface p-5 sm:p-6 pb-5 shadow-[0_1px_0_#fff_inset]">
         <Node state={state} label={label} isFlag={isLast} />
-        <div className="flex items-start justify-between gap-4">
-          <div>
+        <div className="flex items-start justify-between gap-3 sm:gap-4">
+          <div className="min-w-0">
             <div className="label">Topic {label}</div>
-            <h3 className="mb-2 mt-1.5 text-[26px] font-semibold leading-tight tracking-[-0.035em] sm:text-[30px]">{title}</h3>
+            <h3 className="mb-2 mt-1.5 text-[24px] sm:text-[30px] font-semibold leading-tight tracking-[-0.035em]">{title}</h3>
             <p className="text-[15px] leading-relaxed text-ink-2">{topic.shortDescription}</p>
           </div>
           <span className="shrink-0 rounded-full bg-ember px-3 py-1.5 text-[12.5px] font-semibold text-white">Start here</span>
@@ -41,12 +41,12 @@ export function ModuleCard({ subject, topic, index, state, expanded, isLast }: P
               <span className="grid h-[38px] w-[38px] place-items-center rounded-[13px] bg-sand font-mono text-[13px] font-bold">
                 {i + 1}
               </span>
-              <span className="text-[15.5px] leading-snug">{point}</span>
+              <span className="min-w-0 text-[15.5px] leading-snug">{point}</span>
             </li>
           ))}
         </ul>
 
-        <div className="mt-1 flex items-center justify-between border-t border-line pt-4">
+        <div className="mt-1 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
           <span className="label">
             {topic.notes.length} short notes · {formatMinutes(topicMinutes(topic))}
           </span>
@@ -61,23 +61,23 @@ export function ModuleCard({ subject, topic, index, state, expanded, isLast }: P
   return (
     <Link
       href={href}
-      className="group relative mb-4 grid grid-cols-[1fr_84px] items-center gap-5 rounded-card border border-line bg-surface px-6 py-5 transition-transform duration-200 hover:-translate-y-0.5"
+      className="group relative mb-4 grid grid-cols-[1fr_68px] sm:grid-cols-[1fr_84px] items-center gap-3.5 sm:gap-5 rounded-card border border-line bg-surface p-4 sm:px-6 sm:py-5 transition-transform duration-200 hover:-translate-y-0.5"
     >
       <Node state={state} label={label} isFlag={isLast} />
-      <div>
+      <div className="min-w-0">
         <div className="label">
           Topic {label}
           {done && <span className="ml-2 text-ink">· Completed</span>}
         </div>
         <h3
-          className={`mb-1.5 mt-1.5 text-[24px] font-semibold leading-tight tracking-[-0.035em] sm:text-[26px] ${
+          className={`mb-1.5 mt-1.5 text-[22px] sm:text-[26px] font-semibold leading-tight tracking-[-0.035em] ${
             done ? 'text-ink-2' : ''
           }`}
         >
           {title}
         </h3>
         <p className="text-[15px] leading-relaxed text-ink-2">{topic.shortDescription}</p>
-        <div className="mt-3.5 flex gap-4 text-[13.5px] text-ink-3">
+        <div className="mt-3.5 flex flex-wrap gap-x-4 gap-y-1 text-[13.5px] text-ink-3">
           <span className="inline-flex items-center gap-1.5">
             <Icon name="book" /> {topic.notes.length} notes
           </span>
@@ -86,7 +86,7 @@ export function ModuleCard({ subject, topic, index, state, expanded, isLast }: P
           </span>
         </div>
       </div>
-      <div className="h-[84px] w-[84px] overflow-hidden rounded-tile">
+      <div className="h-[68px] w-[68px] sm:h-[84px] sm:w-[84px] overflow-hidden rounded-tile shrink-0">
         <ModuleTile index={index} isLast={isLast} />
       </div>
     </Link>

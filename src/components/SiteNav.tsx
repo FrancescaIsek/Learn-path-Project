@@ -25,7 +25,7 @@ export function AppNav({ center }: { center?: ReactNode }) {
   return (
     <header className="relative z-10 mx-auto grid max-w-[1136px] grid-cols-[1fr_auto] items-center gap-x-3 gap-y-3 px-4 py-5 sm:px-8 lg:grid-cols-[1fr_620px_1fr]">
       <Logo />
-      {center && <div className="order-3 col-span-2 lg:order-none lg:col-span-1">{center}</div>}
+      {center && <div className="order-3 col-span-2 min-w-0 w-full lg:order-none lg:col-span-1">{center}</div>}
       <div className="flex items-center justify-end gap-5 text-[15px] text-ink-2 lg:col-start-3">
         <Link href="/paths" className="hover:text-ink">My paths</Link>
         <Link href="/" className="btn btn-sm hidden sm:inline-flex">
@@ -47,7 +47,7 @@ export function Dock({
   building?: boolean;
 }) {
   return (
-    <div className={`rounded-full p-[2px] shadow-[0_14px_30px_-18px_rgba(120,70,20,.45)] ${building ? 'edge-live animate-slide' : 'edge'}`}>
+    <div className={`w-full max-w-full rounded-full p-[2px] shadow-[0_14px_30px_-18px_rgba(120,70,20,.45)] ${building ? 'edge-live animate-slide' : 'edge'}`}>
       <div className="flex items-center gap-3 rounded-full bg-surface py-2 pl-4 pr-2 text-base">
         <Icon name="spark" className="h-[18px] w-[18px] shrink-0 text-ember" />
         <span className="text-ink-3">Learn</span>

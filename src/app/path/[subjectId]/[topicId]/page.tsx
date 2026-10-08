@@ -13,7 +13,7 @@ interface PageProps {
 
 function Section({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-card border border-line bg-surface p-6 sm:p-8">
+    <section className="rounded-card border border-line bg-surface p-5 sm:p-8">
       <div className="mb-5 flex items-center gap-3 border-b border-line pb-4">
         <span className="grid h-7 w-7 place-items-center rounded-lg bg-sand font-mono text-xs font-bold">{n}</span>
         <h2 className="text-xl font-semibold tracking-[-0.03em]">{title}</h2>
@@ -75,17 +75,18 @@ export default function TopicPage({ params }: PageProps) {
         </div>
 
         {/* Header */}
-        <div className="rounded-cover bg-sand p-6 sm:p-9">
+        <div className="rounded-cover bg-sand p-5 sm:p-9">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <span className="label">{subject.name}</span>
             <button
+              id="toggle-completion"
               onClick={() => toggleCompletion(topicKey)}
               className={`btn btn-sm ${done ? '!border-pine !bg-pine' : ''}`}
             >
               <Icon name="check" /> {done ? 'Marked complete' : 'Mark as complete'}
             </button>
           </div>
-          <h1 className="mb-3 mt-5 text-[34px] font-bold leading-[1.05] tracking-[-0.045em] sm:text-[48px]">
+          <h1 className="mb-3 mt-5 text-[28px] sm:text-[48px] font-bold leading-[1.05] tracking-[-0.045em]">
             {stripNumber(topic.title)}
           </h1>
           <p className="max-w-[560px] text-[17px] leading-relaxed text-ink-2">{topic.shortDescription}</p>
@@ -109,21 +110,21 @@ export default function TopicPage({ params }: PageProps) {
                 <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-ink font-mono text-xs font-bold text-paper">
                   {i + 1}
                 </span>
-                <span className="text-[15.5px] font-medium leading-snug">{point}</span>
+                <span className="min-w-0 text-[15.5px] font-medium leading-snug">{point}</span>
               </li>
             ))}
           </ul>
         </Section>
 
         <Section n={3} title="Recommended resources">
-          <div className="grid gap-3">
+          <div className="grid min-w-0 gap-3">
             {topic.resources.map((res, i) => (
               <a
                 key={i}
                 href={res.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center justify-between gap-4 rounded-2xl border border-line bg-paper p-4 transition-colors hover:border-ink-3"
+                className="group flex min-w-0 max-w-full items-center justify-between gap-4 rounded-2xl border border-line bg-paper p-4 transition-colors hover:border-ink-3"
               >
                 <div className="min-w-0">
                   <span className="label">{res.type || 'Resource'}</span>

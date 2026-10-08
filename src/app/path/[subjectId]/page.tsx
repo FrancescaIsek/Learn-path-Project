@@ -64,11 +64,11 @@ export default function LearningPathPage({ params }: PageProps) {
           className={`relative overflow-hidden rounded-[32px] sm:rounded-cover ${dark ? 'text-ink' : 'text-paper'}`}
           style={{ backgroundColor: theme.bg }}
         >
-          <div className="relative z-10 max-w-[690px] px-6 py-10 sm:px-12 sm:py-11">
+          <div className="relative z-10 max-w-[690px] px-5 py-9 sm:px-12 sm:py-11">
             <div className={`label ${dark ? '!text-ink/70' : '!text-paper/75'}`}>
               Your learning path · {options.level}
             </div>
-            <h1 className="mb-4 mt-3.5 text-[40px] font-bold leading-[1.02] tracking-[-0.05em] sm:text-[62px]">
+            <h1 className="mb-4 mt-3.5 text-[32px] sm:text-[62px] font-bold leading-[1.02] tracking-[-0.05em]">
               {subject.tagline ?? `${subject.name}, step by step`}
             </h1>
             <p className={`max-w-[520px] text-[17px] leading-relaxed sm:text-lg ${dark ? 'text-ink/80' : 'text-paper/90'}`}>

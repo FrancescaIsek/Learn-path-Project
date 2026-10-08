@@ -88,7 +88,7 @@ export function Composer({ value, onChange, placeholder, options, onOptionsChang
           I want to learn{' '}
           <span className="relative inline-block max-w-full align-baseline">
             {/* hidden twin sizes the field to its text */}
-            <span aria-hidden="true" className="invisible block min-w-[6ch] whitespace-pre px-1">
+            <span aria-hidden="true" className="invisible block min-w-[6ch] max-w-full overflow-hidden whitespace-pre px-1">
               {value || placeholder}
             </span>
             <input

@@ -127,7 +127,7 @@ export default function HomePage() {
             Any subject. Built in the right order.
           </div>
 
-          <h1 className="mx-auto mt-6 max-w-[1000px] text-[44px] font-bold leading-[1.02] tracking-[-0.05em] sm:text-[68px] lg:text-[88px]">
+          <h1 className="mx-auto mt-6 max-w-[1000px] text-[38px] font-bold leading-[1.02] tracking-[-0.05em] sm:text-[68px] lg:text-[88px]">
             Learn anything,
             <br />
             <span className="relative inline-block bg-ember-tint px-[0.12em] text-ember">
