@@ -97,12 +97,37 @@ The goal was to replace the v1 version of LearnPath with the new v2 implementati
 
 ### Mobile responsiveness, end-to-end flow verification, and ship log
 
-Today I verified and polished the LearnPath v2 implementation across the entire flow:
+Today I conducted a full audit of LearnPath v2, fixed mobile viewport issues at 375px, added automated regression testing, documented architectural decisions, and verified the live Vercel deployment.
 
-* **Clean Production Build**: Confirmed Next.js 14 production build compiles and generates static routes cleanly without warnings or errors.
-* **Responsive Layout Polish (375px)**: Audited all screens at 375px width (iPhone viewport). Resolved horizontal layout overflows in the Composer sizing twin, Header Dock capsule, Module Cards, and Topic detail resource cards.
-* **Automated End-to-End Verification**: Tested the full user flow (Landing → Composer → Building Animation → Path Overview → Topic Detail → Mark Complete → My Paths) using automated headless Chrome testing to ensure zero layout regressions (`scrollWidth <= clientWidth`).
-* **Live Deployment Verification**: Verified that the live production deployment at `https://learn-path-project-delta.vercel.app` is healthy and synchronized with the repository.
-* **Ship Log & Documentation**: Created `SHIP_LOG.md` to document real architectural decisions and updated `README.md` with current stack and honest capability boundaries.
+#### 1. Getting it running clean
+* Ran a fresh production build (`npm run build`) on Next.js 14 App Router, verifying that all static routes (`/`, `/paths`, `/icon.svg`) and dynamic routes (`/path/[subjectId]`, `/path/[subjectId]/[topicId]`) compile with zero type errors and zero build warnings.
+* Walked the complete user journey: Landing $\rightarrow$ Composer $\rightarrow$ Building animation $\rightarrow$ Finished path $\rightarrow$ Topic detail $\rightarrow$ Mark complete $\rightarrow$ My paths library.
+
+#### 2. Mobile responsiveness audit (375px viewport)
+I ran an automated headless Chrome audit specifically targeting 375px mobile viewports (standard iPhone width) to measure element bounding boxes and detect any `scrollWidth > clientWidth` overflow. The audit caught subtle layout bugs that wouldn't show up on desktop:
+* **Topic resource link overflow**: In `src/app/path/[subjectId]/[topicId]/page.tsx`, long external URLs inside resource cards were causing a 5px horizontal overflow (380px wide on a 375px screen). Because CSS Grid defaults columns to `minmax(auto, 1fr)`, the child flex container was sizing to the un-truncated URL length. Fixed by adding `min-w-0 max-w-full` to the anchor tags and `min-w-0` to the grid container so `truncate` works correctly.
+* **Module cards on mobile**: On `/path/[subjectId]`, quiet topic cards previously used a fixed 84px tile art next to a 20px gap. Inside the path spine's 58px left padding, this left only 133px for the title and metadata. The notes and time badges had no `flex-wrap`, which forced the card wider than 375px. Fixed by adding `min-w-0` to the text column, scaling the tile to 68px on mobile (`sm:84px`), and adding `flex-wrap` with `gap-x-4 gap-y-1` to the metadata badges.
+* **Composer sizing twin**: In `Composer.tsx`, an invisible hidden span (`whitespace-pre`) is used to dynamically size the input field to whatever the user types. On longer queries, this span expanded beyond 100% of the screen width and forced horizontal scrolling. Fixed by adding `max-w-full overflow-hidden` to the sizing twin.
+* **Header Dock capsule**: In `SiteNav.tsx`, the `AppNav` center column containing the Dock capsule was constrained with `min-w-0 w-full`, preventing the grid cell from expanding past the viewport during the building animation.
+* **Heading typography**: Adjusted hero and cover heading font sizes (`text-[38px] sm:text-[68px]` and `text-[32px] sm:text-[62px]`) so decorated headlines fit cleanly within the 343px mobile content container.
+* **App icon & 404 fix**: Added `src/app/icon.svg` using Next.js App Router conventions, eliminating browser 404 console errors for `/favicon.ico`.
+
+#### 3. Automated end-to-end verification
+* Created `test-flow.mjs` using `puppeteer-core` hooked into the local Google Chrome binary.
+* The script programmatically executes the entire flow:
+  1. Loads landing page at 375px and verifies zero horizontal overflow.
+  2. Types into the composer (testing both standard starter topics and long strings).
+  3. Triggers the building state and checks progress steps and skeleton preview.
+  4. Waits for automatic routing to `/path/cooking-basics`.
+  5. Opens the first topic, clicks "Mark as complete", and asserts button toggles to "Marked complete".
+  6. Navigates to `/paths` and verifies the started path appears with 1 topic completed.
+  7. Resizes to desktop (1280x800) and verifies custom topic path generation.
+* The test passed 100% clean with zero console errors and zero horizontal overflow.
+
+#### 4. Ship log discipline & deployment
+* Created `SHIP_LOG.md` documenting every key decision made (responsive flex/grid constraints, App Router vector icon, headless verification architecture, and maintaining absolute honesty about the template-based generation engine).
+* Committed changes atomically with semantic commit messages (`fix`, `feat`, `chore`, `docs`).
+* Pushed all commits to `origin/main` (`FrancescaIsek/Learn-path-Project`).
+* Confirmed the live production deployment on Vercel is healthy and serving HTTP 200: `https://learn-path-project-delta.vercel.app`.
 
 
